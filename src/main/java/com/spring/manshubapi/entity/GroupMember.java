@@ -35,8 +35,8 @@ public class GroupMember {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id")
-    @JsonBackReference("groupMember-group")
-    private Group group;
+    @JoinColumn(name = "team_id")
+    @JsonBackReference("groupMember-team")
+    private Team team;
 
 }

@@ -35,9 +35,8 @@ public class ChatMessage {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id")
-    @JsonBackReference("message-group")
-    private Group group;
-
+    @JoinColumn(name = "team_id")
+    @JsonBackReference("message-team")
+    private Team team;
 
 }

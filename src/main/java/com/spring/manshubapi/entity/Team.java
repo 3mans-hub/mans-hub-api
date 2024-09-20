@@ -12,21 +12,21 @@ import java.util.List;
 
 @Getter
 @ToString(exclude = {"members"})
-@EqualsAndHashCode(of = "groupId")
+@EqualsAndHashCode(of = "teamId")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "group")
-public class Group {
+@Table(name = "team")
+public class Team {
 
     @Id
-    @Column(name = "group_id", updatable = false, nullable = false)
+    @Column(name = "team_id", updatable = false, nullable = false)
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    private String groupId;
+    private String teamId;
 
-    @Column(name = "group_name")
+    @Column(name = "team_name")
     private String name;
 
     @Column(name = "create_at")
@@ -38,18 +38,18 @@ public class Group {
     @Column(name = "join_code")
     private String joinCode;
 
-    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     @JsonManagedReference("group-members")
     private List<GroupMember> members = new ArrayList<>();
 
-    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
-    @JsonManagedReference("group-boards")
+    @JsonManagedReference("team-boards")
     private List<Board> boards = new ArrayList<>();;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    @JsonBackReference("group-user")
+    @JsonBackReference("team-user")
     private User user;
 }

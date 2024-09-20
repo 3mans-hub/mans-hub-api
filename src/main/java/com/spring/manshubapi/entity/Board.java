@@ -35,9 +35,9 @@ public class Board {
     private boolean withdrawal;
 
     @ManyToOne
-    @JoinColumn(name = "group_id")
-    @JsonBackReference("board-group")
-    private Group group;
+    @JoinColumn(name = "team_id")
+    @JsonBackReference("board-team")
+    private Team team;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
