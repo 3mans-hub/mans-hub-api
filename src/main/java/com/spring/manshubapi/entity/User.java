@@ -61,8 +61,4 @@ public class User {
     @JsonManagedReference("user-boards")
     private List<Board> boards = new ArrayList<>();
 
-
-
-
-
 }

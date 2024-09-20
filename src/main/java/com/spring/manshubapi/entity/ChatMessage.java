@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
-@ToString(exclude = {"user", "group"})
+@ToString(exclude = {"user", "team"})
 @EqualsAndHashCode(of = "messageId")
 @AllArgsConstructor
 @NoArgsConstructor
