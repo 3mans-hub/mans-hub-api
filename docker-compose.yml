@@ -1,0 +1,29 @@
+services:
+  backend: # 스프링 앱
+    image: hankibeom/mans-api:latest # 작성된 도커파일대로 빌드
+    platform: linux/amd64
+    ports:
+      - "6969:6969"
+    depends_on:
+      - db
+    environment:
+      SPRING_PROFILES_ACTIVE: 'deploy'
+      SPRING_DATASOURCE_URL: jdbc:mariadb://db:3306/mans
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: mariadb
+      TZ: Asia/Seoul
+    volumes:
+      - upload-data:/home/ec2-user/upload
+
+  db:
+    image: mariadb:10 # 도커 허브에서 받아온 db
+    environment:
+      MYSQL_ROOT_PASSWORD: mariadb # mariaDB를 깔면서 ROOT 비번을 여기서 설정하는거
+      MYSQL_DATABASE: mans
+      TZ: Asia/Seoul
+    volumes: # 저장소, 도커 내부 경로
+      - db-data:/var/lib/mysql
+
+volumes:
+  db-data:
+  upload-data:
