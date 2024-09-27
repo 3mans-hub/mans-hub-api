@@ -61,4 +61,15 @@ public class User {
     @JsonManagedReference("user-boards")
     private List<Board> boards = new ArrayList<>();
 
+    @OneToMany(mappedBy = "requestUser", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
+    @JsonManagedReference("user-requestFriendships")
+    private List<Friendship> requestFriendships = new ArrayList<>();
+
+    @OneToMany(mappedBy = "responseUser", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
+    @JsonManagedReference("user-responseFriendships")
+    private List<Friendship> responseFriendships = new ArrayList<>();
+
+
 }
