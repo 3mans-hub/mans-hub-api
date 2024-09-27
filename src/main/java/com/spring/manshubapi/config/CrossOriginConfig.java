@@ -9,7 +9,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class CrossOriginConfig implements WebMvcConfigurer {
 
-    @Value("${file.upload-dir}")
     private String uploadDir;
 
     private String[] urls = {
@@ -26,12 +25,5 @@ public class CrossOriginConfig implements WebMvcConfigurer {
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
-    }
-
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // uploadDir 경로를 설정해 줍니다.
-        registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:" + uploadDir + "/");
     }
 }
