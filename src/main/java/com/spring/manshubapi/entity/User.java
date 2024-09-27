@@ -71,5 +71,5 @@ public class User {
     @JsonManagedReference("user-responseFriendships")
     private List<Friendship> responseFriendships = new ArrayList<>();
 
-
+    // 테스트커밋
 }
