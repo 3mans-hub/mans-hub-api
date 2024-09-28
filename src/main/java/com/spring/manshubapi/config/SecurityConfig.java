@@ -36,6 +36,6 @@ public class SecurityConfig {
                 .authenticationEntryPoint(new Http403ForbiddenEntryPoint()); // 미인증 사용자가 접근할 경우 403 응답
 
 
-        return null;
+        return http.build();
     }
 }
