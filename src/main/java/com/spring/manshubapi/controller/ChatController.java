@@ -1,6 +1,6 @@
 package com.spring.manshubapi.controller;
 
-import com.spring.manshubapi.dto.response.chat.ChatMessageInfo;
+import com.spring.manshubapi.dto.response.chat.ChatMessageResponseDto;
 import com.spring.manshubapi.entity.ChatMessage;
 import com.spring.manshubapi.repository.chat.ChatMessageRepository;
 import lombok.RequiredArgsConstructor;
@@ -47,11 +47,11 @@ public class ChatController {
     // 채팅방에 입장할 때, 이전 채팅 기록을 불러오기
     @MessageMapping("/loadMessages")
     @SendTo("/topic/public")
-    public List<ChatMessageInfo> loadPreviousMessages() {
+    public List<ChatMessageResponseDto> loadPreviousMessages() {
         // DB에 저장된 이전 메시지들을 불러오기 (엔티티 -> DTO 변환)
         return chatMessageRepository.findAll()
                 .stream()
-                .map(entity -> new ChatMessageInfo(entity.getUser().getName(), entity.getContent()))
+                .map(entity -> new ChatMessageResponseDto(entity.getUser().getName(), entity.getContent()))
                 .collect(Collectors.toList());
     }
 
