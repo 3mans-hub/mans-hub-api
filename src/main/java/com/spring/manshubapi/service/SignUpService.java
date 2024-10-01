@@ -1,7 +1,10 @@
 package com.spring.manshubapi.service;
 
 import com.spring.manshubapi.dto.response.EmailResponseDto;
+import com.spring.manshubapi.dto.response.EmailVerificationResponseDto;
+import com.spring.manshubapi.entity.EmailVerification;
 import com.spring.manshubapi.entity.User;
+import com.spring.manshubapi.repository.EmailVerificationRepository;
 import com.spring.manshubapi.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,12 +13,15 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import javax.mail.internet.MimeMessage;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
 public class SignUpService {
 
     private final UserRepository userRepository;
+
+    private final EmailVerificationRepository emailVerificationRepository;
 
     // 이메일 전송 객체
     private final JavaMailSender mailSender;
@@ -85,6 +91,8 @@ public class SignUpService {
             // 이메일 보내기
             mailSender.send(mimeMessage);
 
+            saveVerificationCode(code, email);
+
             return code;
 
         } catch (Exception e) {
@@ -95,5 +103,37 @@ public class SignUpService {
     // 검증 코드 생성 로직 1000~9999 사이의 4자리 숫자
     private String generateVerificationCode() {
         return String.valueOf((int)(Math.random() * 9000 + 1000));
+    }
+
+    // 이메일 인증 코드 저장
+    private void saveVerificationCode(String code, String email) {
+
+        User registeringUser = userRepository.findByEmail(email);
+
+        EmailVerification emailVerification = EmailVerification.builder()
+                .verificationCode(code)
+                .expiryDate(LocalDateTime.now().plusMinutes(5))  // 인증 만료시간 5분
+                .user(registeringUser)
+                .build();
+
+        emailVerificationRepository.save(emailVerification);
+
+
+
+    }
+
+    public String checkVerificationCode(EmailVerificationResponseDto emailVerificationDto) {
+
+        User registeringUser = userRepository.findByEmail(emailVerificationDto.getEmail());
+
+        EmailVerification emailVerification = emailVerificationRepository.findByUser(registeringUser);
+
+        if(emailVerification == null) {
+            return "인증번호가 존재하지 않습니다";
+        } else if (emailVerification.getExpiryDate().isBefore(LocalDateTime.now())) {
+            return "인증번호가 만료되었습니다";
+        } else {
+            return "인증 성공";
+        }
     }
 }
