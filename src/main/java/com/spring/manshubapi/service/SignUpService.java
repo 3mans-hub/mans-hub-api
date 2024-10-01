@@ -110,15 +110,22 @@ public class SignUpService {
 
         User registeringUser = userRepository.findByEmail(email);
 
-        EmailVerification emailVerification = EmailVerification.builder()
-                .verificationCode(code)
-                .expiryDate(LocalDateTime.now().plusMinutes(5))  // 인증 만료시간 5분
-                .user(registeringUser)
-                .build();
+        EmailVerification verificationCode = emailVerificationRepository.findByUser(registeringUser);
 
-        emailVerificationRepository.save(emailVerification);
+        if(verificationCode == null) {
+            EmailVerification emailVerification = EmailVerification.builder()
+                    .verificationCode(code)
+                    .expiryDate(LocalDateTime.now().plusMinutes(5))  // 인증 만료시간 5분
+                    .user(registeringUser)
+                    .build();
 
+            emailVerificationRepository.save(emailVerification);
+        } else {
+            verificationCode.setVerificationCode(code);
+            verificationCode.setExpiryDate(LocalDateTime.now().plusMinutes(5));
 
+            emailVerificationRepository.save(verificationCode);
+        }
 
     }
 
@@ -132,8 +139,10 @@ public class SignUpService {
             return "인증번호가 존재하지 않습니다";
         } else if (emailVerification.getExpiryDate().isBefore(LocalDateTime.now())) {
             return "인증번호가 만료되었습니다";
-        } else {
-            return "인증 성공";
+        } else if(!emailVerification.getVerificationCode().equals(emailVerificationDto.getVerificationCode())) {
+            return "인증번호가 일치하지 않습니다";
         }
+
+        return "인증 성공";
     }
 }

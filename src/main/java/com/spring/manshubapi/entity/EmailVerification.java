@@ -24,9 +24,11 @@ public class EmailVerification {
     private String emailVerificationId;
 
     @Column(name = "verification_code", nullable = false)
+    @Setter
     private String verificationCode;
 
     @Column(nullable = false)
+    @Setter
     private LocalDateTime expiryDate; // 인증
 
     @OneToOne
