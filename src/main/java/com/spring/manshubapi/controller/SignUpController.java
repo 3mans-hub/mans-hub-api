@@ -71,6 +71,11 @@ public class SignUpController {
 
     }
 
+    /**
+     * 최종 회원가입 메서드
+     * @param signUpResponseDto - 가입하려는 이메일, 닉네임, 패스워드
+     * @return - 가입 완료시 가입된 user정보 반환
+     */
     @PostMapping
     public ResponseEntity<?> signUp(@RequestBody SignUpResponseDto signUpResponseDto) {
 

@@ -134,6 +134,8 @@ public class SignUpService {
 
     }
 
+    // 발급된 인증번호와 입력한 인증번호가 일치하는지 검사하는 메서드
+    // 일치하더라도 인증번호의 만료시간이 지나면 통과 X
     public String checkVerificationCode(EmailVerificationResponseDto emailVerificationDto) {
 
         User registeringUser = userRepository.findByEmail(emailVerificationDto.getEmail());
@@ -151,14 +153,22 @@ public class SignUpService {
         return "인증 성공";
     }
 
+    /**
+     * 최종 회원가입을 위한 메서드
+     * @param signUpResponseDto - 이메일 닉네임, 패스워드
+     * @return - 가입한 유저 정보
+     */
     public User signUp(SignUpResponseDto signUpResponseDto) {
 
+        //유저가 입력한 비밀번호를 encode 화 한다.
         String encoderPassword = encoder.encode(signUpResponseDto.getPassword());
 
+        // 가입 진행중인 유저 정보 가져온기(email)
         User registeringUser = userRepository.findByEmail(signUpResponseDto.getEmail());
 
         if(registeringUser != null) {
 
+            // 유저 정보 저장
             registeringUser.setName(signUpResponseDto.getNickName());
             registeringUser.setPassword(encoderPassword);
             registeringUser.setCreateAt(LocalDateTime.now());
