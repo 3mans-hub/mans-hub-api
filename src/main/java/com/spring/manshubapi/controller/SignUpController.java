@@ -3,6 +3,8 @@ package com.spring.manshubapi.controller;
 
 import com.spring.manshubapi.dto.response.EmailResponseDto;
 import com.spring.manshubapi.dto.response.EmailVerificationResponseDto;
+import com.spring.manshubapi.dto.response.SignUpResponseDto;
+import com.spring.manshubapi.entity.User;
 import com.spring.manshubapi.service.SignUpService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -65,6 +67,19 @@ public class SignUpController {
             return ResponseEntity.ok().body(checked);
         } else {
             return ResponseEntity.badRequest().body(checked);
+        }
+
+    }
+
+    @PostMapping
+    public ResponseEntity<?> signUp(@RequestBody SignUpResponseDto signUpResponseDto) {
+
+        User signUpUser = signUpService.signUp(signUpResponseDto);
+
+        if(signUpUser != null) {
+            return ResponseEntity.ok().body(signUpUser);
+        } else {
+            return ResponseEntity.badRequest().body(null);
         }
 
     }

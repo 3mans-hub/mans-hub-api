@@ -2,6 +2,7 @@ package com.spring.manshubapi.service;
 
 import com.spring.manshubapi.dto.response.EmailResponseDto;
 import com.spring.manshubapi.dto.response.EmailVerificationResponseDto;
+import com.spring.manshubapi.dto.response.SignUpResponseDto;
 import com.spring.manshubapi.entity.EmailVerification;
 import com.spring.manshubapi.entity.User;
 import com.spring.manshubapi.repository.EmailVerificationRepository;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.mail.internet.MimeMessage;
@@ -22,6 +24,9 @@ public class SignUpService {
     private final UserRepository userRepository;
 
     private final EmailVerificationRepository emailVerificationRepository;
+
+    // 패스워드 암호화 객체
+    private final PasswordEncoder encoder;
 
     // 이메일 전송 객체
     private final JavaMailSender mailSender;
@@ -144,5 +149,24 @@ public class SignUpService {
         }
 
         return "인증 성공";
+    }
+
+    public User signUp(SignUpResponseDto signUpResponseDto) {
+
+        String encoderPassword = encoder.encode(signUpResponseDto.getPassword());
+
+        User registeringUser = userRepository.findByEmail(signUpResponseDto.getEmail());
+
+        if(registeringUser != null) {
+
+            registeringUser.setName(signUpResponseDto.getNickName());
+            registeringUser.setPassword(encoderPassword);
+            registeringUser.setCreateAt(LocalDateTime.now());
+
+            userRepository.save(registeringUser);
+
+        }
+
+        return registeringUser;
     }
 }
