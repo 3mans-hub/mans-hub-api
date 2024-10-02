@@ -26,15 +26,18 @@ public class User {
     private String userId;
 
     @Column(name = "name")
+    @Setter
     private String name;
 
     @Column(name = "email", nullable = false)
     private String email;
 
     @Column(name = "password")
+    @Setter
     private String password;
 
     @Column(name = "create_at")
+    @Setter
     private LocalDateTime createAt;
 
     @Column(name = "withdrawal")
