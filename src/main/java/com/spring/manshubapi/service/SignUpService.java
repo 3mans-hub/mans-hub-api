@@ -31,7 +31,7 @@ public class SignUpService {
     // 이메일 전송 객체
     private final JavaMailSender mailSender;
 
-    @Value("${study.mail.host}")
+    @Value("${manshubapi.mail.host}")
     private String host;
 
 
