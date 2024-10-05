@@ -1,11 +1,13 @@
 package com.spring.manshubapi.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
+@Slf4j
 public class SignalingController {
 
     /*
@@ -22,6 +24,7 @@ public class SignalingController {
     @MessageMapping("/offer")
     @SendTo("/topic/offer") // 모든 구독자들에게 브로드캐스트
     public String handleOffer(@RequestBody String offer) {
+        log.info("Offer 메시지 수신: {}", offer);
         return offer; // 받은 offer 메시지를 다시 전송
     }
 
@@ -29,6 +32,7 @@ public class SignalingController {
     @MessageMapping("/answer")
     @SendTo("/topic/answer") // 모든 구독자
     public String handleAnswer(@RequestBody String answer) {
+        log.info("answer 메시지 수신: {}", answer);
         return answer; // 받은 answer 메시지를 다시 전송
     }
 
@@ -36,6 +40,7 @@ public class SignalingController {
     @MessageMapping("/ice-candidate")
     @SendTo("/topic/ice-candidate") // 모든 구독자들에게 브로드캐스트
     public String handleIceCandidate(@RequestBody String iceCandidate) {
+        log.info("Ice 후보 메시지 수신: {}", iceCandidate);
         return iceCandidate; // 받은 ICE candidate 메시지를 다시 전송
     }
 

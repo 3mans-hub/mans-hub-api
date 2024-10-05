@@ -20,7 +20,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/chat-websocket")
+        registry.addEndpoint("/chat-websocket", "/ws")
                 .setAllowedOrigins("http://localhost:3000")  // 프론트엔드 주소를 허용
                 .withSockJS();
     }
