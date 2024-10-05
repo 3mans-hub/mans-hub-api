@@ -1,6 +1,7 @@
 package com.spring.manshubapi.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.Mac;
@@ -13,7 +14,8 @@ import java.util.Map;
 @Service
 public class TurnCredentialsService {
 
-    private static final String TURN_SECRET = "32cab9e617dbc639e42ee7cee3cfe467";
+    @Value("${turn.secret}")
+    private String TURN_SECRET;
 
     public Map<String, String> generateTurnCredentials(String username) {
         try {
