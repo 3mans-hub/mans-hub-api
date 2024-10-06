@@ -1,0 +1,18 @@
+package com.spring.manshubapi.dto.request;
+
+
+import lombok.*;
+
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode
+@Builder
+public class SignInRequestDto {
+
+    private SignInStatus signInStatus;
+    private Boolean isLogin;
+
+}
