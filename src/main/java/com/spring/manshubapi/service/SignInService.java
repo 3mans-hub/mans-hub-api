@@ -34,12 +34,14 @@ public class SignInService {
                     .signInStatus(SignInStatus.EMAIL)
                     .isLogin(false)
                     .build();
+
         } else if (!encoder.matches(userInputPassword, user.getPassword())) {
 
             return SignInRequestDto.builder()
                     .signInStatus(SignInStatus.PASSWORD)
                     .isLogin(false)
                     .build();
+
         } else {
 
             // 여기서 토큰 발급하기
@@ -52,6 +54,7 @@ public class SignInService {
                     .email(user.getEmail())
                     .userId(user.getUserId())
                     .nickname(user.getName())
+                    .autoLogin(signInResponseDto.isAutoLogin())
                     .token(token)
                     .build();
         }

@@ -16,6 +16,7 @@ public class SignInRequestDto {
     private Boolean isLogin;
     private String userId;
     private String email;
+    private boolean autoLogin;
     private String nickname;
     private String token;
 
