@@ -26,4 +26,10 @@ public class SignInController {
 
         return ResponseEntity.ok().body(signInRequestDto);
     }
+
+    @PostMapping("/autoLogin")
+    public ResponseEntity<?> autoLogin () {
+
+        return ResponseEntity.ok().build();
+    }
 }

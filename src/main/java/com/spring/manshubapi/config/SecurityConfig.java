@@ -1,19 +1,25 @@
 package com.spring.manshubapi.config;
 
+import com.spring.manshubapi.auth.filter.JwtAuthFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
+import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @RequiredArgsConstructor
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
+
+    private final JwtAuthFilter jwtAuthFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -34,6 +40,8 @@ public class SecurityConfig {
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(new Http403ForbiddenEntryPoint());  // 미인증 사용자의 접근 시 403 응답
+
+        http.addFilterAfter(jwtAuthFilter, CorsFilter.class);
 
         return http.build();
     }
