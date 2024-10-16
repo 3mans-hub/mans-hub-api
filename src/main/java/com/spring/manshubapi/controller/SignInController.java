@@ -30,6 +30,6 @@ public class SignInController {
     @PostMapping("/autoLogin")
     public ResponseEntity<?> autoLogin () {
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body("ok");
     }
 }
