@@ -36,7 +36,7 @@ public class SecurityConfig {
                 .formLogin().disable()
                 .authorizeRequests()
                 .antMatchers("/chat-websocket/**").permitAll()  // WebSocket 경로는 인증 없이 허용
-                .antMatchers("/**").permitAll()  // 나머지 모든 경로도 허용
+                .antMatchers("/sign_in", "/sign_up/**", "find_password/**").permitAll()  // 나머지 모든 경로도 허용
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(new Http403ForbiddenEntryPoint());  // 미인증 사용자의 접근 시 403 응답
