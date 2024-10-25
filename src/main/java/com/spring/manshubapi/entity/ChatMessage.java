@@ -2,6 +2,7 @@ package com.spring.manshubapi.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -32,17 +33,17 @@ public class ChatMessage {
     @Column(name = "create_at")
     private LocalDateTime createAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
 //    @JsonBackReference("message-user")
     @Setter
-    @JsonIgnore
+    @JsonBackReference(value = "user-messages")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
 //    @JsonBackReference("message-team")
-    @JsonIgnore
+    @JsonBackReference(value = "team-messages")
     private Team team;
 
     @PrePersist
