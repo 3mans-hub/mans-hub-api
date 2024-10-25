@@ -7,8 +7,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChatMessageResponseDto {
-    private String name;  // 사용자 이름만 포함
+public class ChatMessageDto {
+    private String userId;
     private String content;
     private String createAt;
+    private String name;  // user의 이름을 나타냄
+
+
 }
