@@ -1,15 +1,21 @@
 package com.spring.manshubapi.controller;
 
+import com.spring.manshubapi.dto.response.chat.ChatMessageDto;
 import com.spring.manshubapi.dto.response.chat.ChatMessageResponseDto;
 import com.spring.manshubapi.entity.ChatMessage;
+import com.spring.manshubapi.entity.User;
+import com.spring.manshubapi.repository.UserRepository;
 import com.spring.manshubapi.repository.chat.ChatMessageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,39 +25,45 @@ import java.util.stream.Collectors;
 public class ChatController {
 
     private final ChatMessageRepository chatMessageRepository;
+    private final UserRepository userRepository;
 
     // 클라이언트가 "/app/sendMessage"로 메시지를 보낼 때 처리
+
+
     @MessageMapping("/sendMessage")
     @SendTo("/topic/public")
-    public ChatMessage broadcastMessage(@Payload ChatMessage message) {
-        // 받은 메시지 로그로 출력
-        System.out.println("Received message: " + message.getUser() + ", " + message.getContent());
+    public ChatMessageResponseDto broadcastMessage(@Payload ChatMessageDto messageDto) {
+        // DateTimeFormatter 를 사용하여 시간 파싱
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
 
-        // 클라이언트에서 받은 메시지가 제대로 들어왔는지 확인
-        if (message.getContent() == null || message.getUser() == null) {
-            System.out.println("Error: Missing text or user in message");
-        }
+        User user = userRepository.findById(messageDto.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // 메시지를 DB에 저장
-        System.out.println("Received message: " + message);
-        ChatMessage entity = ChatMessage.builder()
-                .user(message.getUser())  // 사용자 설정
-                .content(message.getContent())  // 메시지 내용 설정
+        // ChatMessage 엔티티 생성 및 저장
+        ChatMessage messageEntity = ChatMessage.builder()
+                .content(messageDto.getContent())
+                .createAt(LocalDateTime.parse(messageDto.getCreateAt(), formatter))
+                .user(user)
                 .build();
-        chatMessageRepository.save(entity);
 
-        // 메시지를 다른 구독자에게 브로드캐스트
-        return entity;  // 저장한 엔티티 반환
+        chatMessageRepository.save(messageEntity);
+
+        // 응답 DTO 반환
+        return new ChatMessageResponseDto(user.getName(), messageDto.getContent(), messageDto.getCreateAt());
     }
 
     // 채팅방에 입장할 때, 이전 채팅 기록을 불러오기
     @MessageMapping("/loadMessages")
     @SendTo("/topic/public")
+    @Transactional  // 트랜잭션 보장
     public List<ChatMessageResponseDto> loadPreviousMessages() {
         // DB에 저장된 이전 메시지들을 불러오기 (엔티티 -> DTO 변환)
         return chatMessageRepository.findAll()
                 .stream()
-                .map(entity -> new ChatMessageResponseDto(entity.getUser().getName(), entity.getContent()))
+                .map(entity -> new ChatMessageResponseDto(
+                        entity.getUser() != null ? entity.getUser().getName() : "Unknown User",
+                        entity.getContent(), entity.getCreateAt().toString()
+                ))
                 .collect(Collectors.toList());
     }
 
