@@ -2,8 +2,10 @@ package com.spring.manshubapi.service;
 
 import com.spring.manshubapi.dto.response.CreateGroupResponseDto;
 import com.spring.manshubapi.dto.response.FindGroupResponseDto;
+import com.spring.manshubapi.entity.GroupMember;
 import com.spring.manshubapi.entity.Team;
 import com.spring.manshubapi.entity.User;
+import com.spring.manshubapi.repository.GroupMemberRepository;
 import com.spring.manshubapi.repository.TeamRepository;
 import com.spring.manshubapi.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ public class GroupService {
 
     private final UserRepository userRepository;
     private final TeamRepository teamRepository;
+    private final GroupMemberRepository groupMemberRepository;
 
     public Team createGroup(CreateGroupResponseDto createGroupResponseDto) {
 
@@ -32,6 +35,16 @@ public class GroupService {
                 .build();
 
         teamRepository.save(newTeam);
+
+        GroupMember groupMember = GroupMember.builder()
+                .user(user)
+                .team(newTeam)
+                .createAt(LocalDateTime.now())
+                .withdrawal(false)
+                .build();
+
+        groupMemberRepository.save(groupMember);
+
 
         return newTeam;
     }
