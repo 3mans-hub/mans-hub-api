@@ -11,7 +11,7 @@ public class ChatMessageDto {
     private String userId;
     private String content;
     private String createAt;
-    private String name;  // user의 이름을 나타냄
-
+    private String name;
+    private String teamId;
 
 }
