@@ -48,6 +48,6 @@ public class ChatMessage {
 
     @PrePersist
     public void prePersist() {
-        this.createAt = this.createAt == null ? LocalDateTime.now() : this.createAt;
+        this.createAt = LocalDateTime.now();  // 항상 현재 시간을 설정
     }
 }
