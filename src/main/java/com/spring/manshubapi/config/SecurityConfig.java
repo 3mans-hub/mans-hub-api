@@ -10,9 +10,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @EnableWebSecurity
@@ -25,38 +28,40 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedOriginPattern("http://app-deploy0918.s3-website.ap-northeast-2.amazonaws.com");
+        configuration.addAllowedOriginPattern("http://localhost:3000");
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .cors()
+                .cors().configurationSource(corsConfigurationSource())
                 .and()
                 .csrf().disable()
                 .httpBasic().disable()
                 .formLogin().disable()
                 .authorizeRequests()
-                .antMatchers("/chat-websocket/**").permitAll()  // WebSocket 경로는 인증 없이 허용
-                .antMatchers("/sign_in", "/sign_up/**", "find_password/**").permitAll()  // 나머지 모든 경로도 허용
+                .antMatchers("/chat-websocket/**").permitAll()
+                .antMatchers("/sign_in", "/sign_up/**", "/find_password/**").permitAll()
+                .antMatchers("/api/*").permitAll()
+                .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()
-                .authenticationEntryPoint(new Http403ForbiddenEntryPoint());  // 미인증 사용자의 접근 시 403 응답
+                .authenticationEntryPoint(new Http403ForbiddenEntryPoint());
 
+        // CorsFilter 뒤에 jwtAuthFilter를 추가
         http.addFilterAfter(jwtAuthFilter, CorsFilter.class);
 
         return http.build();
-    }
-
-
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:3000")  // 프론트엔드 주소 허용
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
-            }
-        };
-
     }
 }
