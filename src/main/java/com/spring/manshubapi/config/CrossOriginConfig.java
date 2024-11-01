@@ -15,7 +15,7 @@ public class CrossOriginConfig implements WebMvcConfigurer {
             "http://localhost:3000",
             "http://localhost:3001",
             "http://localhost:3002",
-            "http://app-deploy0918.s3-website.ap-northeast-2.amazonaws.com:3000",
+            "http://app-deploy0918.s3-website.ap-northeast-2.amazonaws.com",
     };
 
     @Override
