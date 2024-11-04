@@ -9,4 +9,6 @@ import java.util.List;
 public interface TeamRepository extends JpaRepository<Team, String> {
 
     List<Team> findAllByUser(User user);
+
+    Team findByJoinCode(String joinCode);
 }

@@ -1,6 +1,7 @@
 package com.spring.manshubapi.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -8,7 +9,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
-@ToString(exclude = {"user", "group"})
+@ToString(exclude = {"user", "team"})
 @EqualsAndHashCode(of = "groupMemberId")
 @AllArgsConstructor
 @NoArgsConstructor
@@ -34,7 +35,7 @@ public class GroupMember {
     @JsonBackReference("groupMember-user")
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "team_id")
     @JsonBackReference("groupMember-team")
     private Team team;
